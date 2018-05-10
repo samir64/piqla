@@ -27,7 +27,7 @@ $result = $var->select(
 );
 
 var_dump($result->toArray());
-echo;
+echo "<br><br>";
 var_dump($result->parent->toArray());
 
 /* Output:
