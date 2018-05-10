@@ -8,49 +8,73 @@ And in first release it has just `select` function to select some elements (like
 
 Define an array and pass that to new Pinq instance constructor
 
-Now you can use Pinq deformer functions and call them to result again and again and ...
+Now you can use Pinq deformer functions and call them for returned result again and again and ...
 
 ## Sample
 
 ```php
-$var = [
-   ["name" => "jack", "family" => "Gonjishke", "age" => 45],
-   ["name" => "joe", "family" => "gandomi", "age" => 32],
-   ["name" => "john", "family" => "val john", "age" => 63]
-];
+$var =
+   [
+      [
+         "name" => "jack",
+         "family" => "Gonjishke",
+         "age" => 45
+      ],
+      [
+         "name" => "joe",
+         "family" => "gandomi",
+         "age" => 32
+      ],
+      [
+         "name" => "john",
+         "family" => "val john",
+         "age" => 63
+      ]
+   ];
 
 $var = new Pinq($var);
 $result = $var->select(
-   ["name, age, family" => function ($n, $a, $f) {
-      if ($a > 40) {
-         return ["family" => $f, "parent" => "george"];
+   [function ($family, $age) {
+      if ($age > 40) {
+         return ["family" => $family, "parent" => "george"];
+      }
+   },
+   function ($family, $age) {
+      if ($age < 40) {
+         return ["family" => $family, "parent" => "sam"];
       }
    }]
 );
 
-var_dump($result->toArray());
+print_r($result->toArray());
 echo "<br><br>";
-var_dump($result->parent->toArray());
+print_r($result->parent->distinct()->toArray());
+
 
 /* Output:
-array(2) {
-   [0]=> array(2) {
-      ["family"]=> string(9) "Gonjishke"
-      ["parent"]=> string(6) "george"
-   }
-   [1]=> array(2) {
-      ["family"]=> string(8) "val john"
-      ["parent"]=> string(6) "george"
-   }
-}
+Array (
+   [0] => Array (
+      [family] => Gonjishke
+      [parent] => george
+   )
+   [1] => Array (
+      [family] => val john
+      [parent] => george
+   )
+   [2] => Array (
+      [family] => gandomi
+      [parent] => sam
+   )
+)
 
-array(2) {
-   [0]=> array(1) {
-      ["parent"]=> string(6) "george"
-   }
-   [1]=> array(1) {
-      ["parent"]=> string(6) "george"
-   }
-} 
+
+Array (
+   [0] => Array (
+      [parent] => george
+   )
+   [2] => Array (
+      [parent] => sam
+   )
+) 
 */
 ```

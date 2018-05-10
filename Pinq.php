@@ -14,6 +14,20 @@ class Pinq
       return $result;
    }
 
+   private function selectArray($function, $variables)
+   {
+      $result = array();
+      
+      foreach ($this->members as $item) {
+         $res = call_user_func_array($function, $this->getValues($item, $variables));
+         if ($res) {
+            $result[] = $res;
+         }
+      }
+      
+      return $result;
+   }
+
    public function __construct(array $input = [])
    {
       $this->members = $input;
@@ -34,30 +48,26 @@ class Pinq
 
    public function select($param)
    {
+      $result = array();
       if (is_array($param)) {
-         foreach ($param as $variablesString => $function) {
-            if (is_callable($function)) {
-               $variables = array_map("trim", explode(",", $variablesString));
-               $result = array();
-               array_map(function ($element) use ($function, $variables, &$result) {$res = call_user_func_array($function, $this->getValues($element, $variables));if ($res) {$result[] = $res;return $res;} else {
-                  return false;
+         foreach ($param as $callback) {
+            if (is_callable($callback)) {
+               $args = (new ReflectionFunction($callback))->getParameters();
+               $variables = array();
+               foreach ($args as $arg) {
+                  $variables[] = $arg->name;
                }
-               }, $this->members);
-
-               return new Pinq($result);
+               $result = array_merge($result, $this->selectArray($callback, $variables));
             }
          }
       }
+      return new Pinq($result);
    }
    
    public function distinct()
    {
-      $result = array();
-      
-      foreach ($this->members as $item) {
-         
-      }
-      
+      $result = array_unique($this->members, SORT_REGULAR);
+
       return new Pinq($result);
    }
 
