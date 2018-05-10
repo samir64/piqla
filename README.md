@@ -49,6 +49,8 @@ $result = $var->select(
 print_r($result->toArray());
 echo "<br><br>";
 print_r($result->parent->distinct()->toArray());
+echo "<br><br>";
+print_r($result->delete([function ($family) { return $family != "gandomi"; }])->toArray());
 
 
 /* Output:
@@ -73,6 +75,14 @@ Array (
       [parent] => george
    )
    [2] => Array (
+      [parent] => sam
+   )
+)
+
+
+Array (
+   [0] => Array (
+      [family] => gandomi
       [parent] => sam
    )
 ) 
