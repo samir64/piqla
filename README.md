@@ -1,12 +1,14 @@
 # Pinq v1.0.0
 
 This version of Pinq just supports "Pinq to array"
+
 And in first release it has just `select` function to select some elements (like as `SELECT` in SQL)
 
 ## How to use
 
 Define an array and pass that to new Pinq instance constructor
-Know you can use Pinq deformer functions and call them to result again and again and ...
+
+Now you can use Pinq deformer functions and call them to result again and again and ...
 
 ## Sample
 
