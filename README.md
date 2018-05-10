@@ -1,8 +1,20 @@
-# Pinq v1.0.0
+# Pinq v1.1.15
 
 This version of Pinq just supports "Pinq to array"
 
-And in first release it has just `select` function to select some elements (like as `SELECT` in SQL)
+## Available methods
+
+```php
+where(...$params)
+select(...$params)
+delete(...$params)
+update(...$params)
+insert(...$params)
+distinct()
+count()
+limit($count, $offset)
+offset($offset)
+```
 
 ## How to use
 
