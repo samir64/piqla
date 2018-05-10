@@ -3,6 +3,17 @@ class Pinq
 {
    private $members = array();
 
+   private function getVariables($function)
+   {
+      $args = (new ReflectionFunction($function))->getParameters();
+      $variables = array();
+      foreach ($args as $arg) {
+         $variables[] = $arg->name;
+      }
+      
+      return $variables;
+   }
+
    private function getValues($array, $variables)
    {
       $result = [];
@@ -14,7 +25,20 @@ class Pinq
       return $result;
    }
 
-   private function selectArray($function, $variables)
+   private function _where($function, $variables)
+   {
+      $result = array();
+      
+      foreach ($this->members as $item) {
+         if (call_user_func_array($function, $this->getValues($item, $variables))) {
+            $result[] = $item;
+         }
+      }
+      
+      return $result;
+   }
+
+   private function _select($function, $variables)
    {
       $result = array();
       
@@ -22,6 +46,19 @@ class Pinq
          $res = call_user_func_array($function, $this->getValues($item, $variables));
          if ($res) {
             $result[] = $res;
+         }
+      }
+      
+      return $result;
+   }
+
+   private function _delete($function, $variables)
+   {
+      $result = array();
+      
+      foreach ($this->members as $item) {
+         if (!call_user_func_array($function, $this->getValues($item, $variables))) {
+            $result[] = $item;
          }
       }
       
@@ -46,21 +83,63 @@ class Pinq
       return new Pinq($result);
    }
 
-   public function select($param)
+   public function where(array $params)
    {
       $result = array();
-      if (is_array($param)) {
-         foreach ($param as $callback) {
+
+      if (is_callable($params)) {
+         $params = [$params];
+      }
+
+      if (is_array($params)) {
+         foreach ($params as $callback) {
             if (is_callable($callback)) {
-               $args = (new ReflectionFunction($callback))->getParameters();
-               $variables = array();
-               foreach ($args as $arg) {
-                  $variables[] = $arg->name;
-               }
-               $result = array_merge($result, $this->selectArray($callback, $variables));
+               $variables = $this->getVariables($callback);
+               $result = array_merge($result, $this->_where($callback, $variables));
             }
          }
       }
+
+      return new Pinq($result);
+   }
+
+   public function select(array $params)
+   {
+      $result = array();
+
+      if (is_callable($params)) {
+         $params = [$params];
+      }
+
+      if (is_array($params)) {
+         foreach ($params as $callback) {
+            if (is_callable($callback)) {
+               $variables = $this->getVariables($callback);
+               $result = array_merge($result, $this->_select($callback, $variables));
+            }
+         }
+      }
+      
+      return new Pinq($result);
+   }
+   
+   public function delete($params = [])
+   {
+      $result = array();
+
+      if (is_callable($params)) {
+         $params = [$params];
+      }
+
+      if (is_array($params)) {
+         foreach ($params as $callback) {
+            if (is_callable($callback)) {
+               $variables = $this->getVariables($callback);
+               $result = array_merge($result, $this->_delete($callback, $variables));
+            }
+         }
+      }
+      
       return new Pinq($result);
    }
    
