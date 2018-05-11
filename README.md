@@ -5,15 +5,15 @@ This version of Pinq just supports "Pinq to array"
 ## Available methods
 
 ```php
-where(...$params)
-select(...$params)
-delete(...$params)
-update(...$params)
-insert(...$params)
+where(callable ...$params)
+select(callable ...$params)
+delete(callable ...$params)
+update(callable ...$params)
+insert(callable ...$params)
 distinct()
 count()
-limit($count, $offset)
-offset($offset)
+limit(int $count, int $offset)
+offset(int $offset)
 ```
 
 ## How to use
