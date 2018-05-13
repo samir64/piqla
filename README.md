@@ -65,7 +65,7 @@ $var = new Pinq($var);
 
 ### Test functions
 
-$$where()$$
+#### where()
 
 ```php
 echo "<h3>Where:</h3>";
@@ -76,7 +76,7 @@ $var_pinq->where(function ($item, $name, $family, $age) {
 // Output: [{name => "jack", family => "gonjishke", age => 45},{name => "john", family => "val john", age => 63}]
 ```
 
-$$select()$$
+#### select()
 
 ```php
 $var_pinq->select(function ($item, $name, $family, $age) {
@@ -93,7 +93,7 @@ $var_pinq->select(function ($item, $name, $family, $age) {
 // Output: [fullname: "gonjishke, jack", {fullname: "val john, john"}]
 ```
 
-$$delete()$$
+#### delete()
 
 ```php
 $var_pinq->delete(function ($item, $name, $family, $age) {
@@ -103,7 +103,7 @@ $var_pinq->delete(function ($item, $name, $family, $age) {
 // Output: [name: "jack", family: "gonjishke", age: 45}, {name: "john", family: "val john", age: 63}]
 ```
 
-$$update()$$
+#### update()
 
 ```php
 $var_pinq->update(function ($item, $name, $family, $age) {
@@ -116,7 +116,7 @@ $var_pinq->update(function ($item, $name, $family, $age) {
 // Output: [name: "jack", family: "gonjishke", age: 23, old: true}, {name: "joe", family: "gandomi", age: 32, old: false}, {name: "jack", family: "landan", age: 23, old: false}, {name: "john", family: "val john", age: 32, old: true}]
 ```
 
-$$insert()$$
+#### insert()
 
 ```php
 $var_pinq->insert(function () {
@@ -126,7 +126,7 @@ $var_pinq->insert(function () {
 // Output: [name: "jack", family: "gonjishke", age: 45, old: NULL}, {name: "joe", family: "gandomi", age: 32, old: NULL}, {name: "jack", family: "landan", age: 23, old: NULL}, {name: "john", family: "val john", age: 63, old: NULL}, {name: "nicol", family: "cadmiom", old: true, age: NULL}]
 ```
 
-$$orderBy()$$
+#### orderBy()
 
 ```php
 $var_pinq->orderDescendingBy(function ($item, $name, $family, $age) {
@@ -136,7 +136,7 @@ $var_pinq->orderDescendingBy(function ($item, $name, $family, $age) {
 // Output: [name: "jack", family: "gonjishke", age: 45}, {name: "john", family: "val john", age: 63}, {name: "jack", family: "landan", age: 23}, {name: "joe", family: "gandomi", age: 32}]
 ```
 
-$$distinct()$$
+#### distinct()
 
 ```php
 $var_pinq->distinct();
@@ -144,7 +144,7 @@ $var_pinq->distinct();
 // Output: [name: "jack"}, {name: "joe"}, {name: "john"}]
 ```
 
-$$count()$$
+#### count()
 
 ```php
 $var_pinq->count();
@@ -152,7 +152,7 @@ $var_pinq->count();
 // Output: 4
 ```
 
-$$min()$$
+#### min()
 
 ```php
 $var_pinq->min(function ($item, $age) {
@@ -168,7 +168,7 @@ $var_pinq->min(function ($item, $age) {
 // Output: [name: "jack", family: "landan", age: 23}, {name: "joe", family: "gandomi", age: 32}]
 ```
 
-$$max()$$
+#### max()
 
 ```php
 $var_pinq->max(function ($item, $age) {
@@ -184,7 +184,7 @@ $var_pinq->max(function ($item, $age) {
 // Output: [name: "jack", family: "gonjishke", age: 45}, {name: "john", family: "val john", age: 63}]
 ```
 
-$$sum()$$
+#### sum()
 
 ```php
 $var_pinq->sum(function ($item, $age) {
@@ -200,7 +200,7 @@ $var_pinq->sum(function ($item, $age) {
 // Output: [75]
 ```
 
-$$average()$$
+#### average()
 
 ```php
 $var_pinq->average(function ($item, $age) {
@@ -216,7 +216,7 @@ $var_pinq->average(function ($item, $age) {
 // Output: [34, 3.5]
 ```
 
-$$limit()$$
+#### limit()
 
 ```php
 $var_pinq->limit(2, 1);
@@ -224,7 +224,7 @@ $var_pinq->limit(2, 1);
 // Output: [name: "joe", family: "gandomi", age: 32}, {name: "jack", family: "landan", age: 23}]
 ```
 
-$$offset()$$
+#### offset()
 
 ```php
 $var_pinq->offset(2);
