@@ -139,7 +139,7 @@ $var_pinq->orderDescendingBy(function ($item, $name, $family, $age) {
 #### distinct()
 
 ```php
-$var_pinq->distinct();
+$var_pinq->name->distinct();
 
 // Output: [name: "jack"}, {name: "joe"}, {name: "john"}]
 ```
