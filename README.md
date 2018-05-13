@@ -17,8 +17,8 @@ function distinct();
 function count();
 function min();
 function max();
-function sum();
-function average();
+function sum(callable ...$params);
+function average(callable ...$params);
 function limit(int $count, int $offset);
 function offset(int $offset);
 ```
