@@ -27,11 +27,11 @@ function offset(int $offset);
 
 Define an array and pass that to new Pinq instance constructor
 
-Callback functions (that define to $params arguments) must have least one argument
-This argument (it's name doen't matter) is every item in list
-After that, other else arguments must match with list members name to pass value of that member instead of that argument and these arguments are not required and you have not to define argument for each member beacause you can access by first argument to all of that's members and other arguments is just to easy access to some members.
+Callback functions must have one argument at least
+This argument (its name doen't matter) is current item in list in loop
+After that, other else arguments must match with list members name to pass value of that member instead of that argument and these arguments are not required and you have not to define argument for each member beacause you can access by first argument to all of members and other arguments use for easy access to some members.
 
-Now you can use Pinq deformer functions and call them for returned result again and again and ...
+Now you can use Pinq deformer functions and call them on returned result again and again and ... (like bellow samples)
 
 ## Sample
 
