@@ -1,4 +1,10 @@
-# Pinq v1.1.16
+# Piqla v1.1.16
+
+>I found today a project with similar name ([Pinq](https://github.com/TimeToogo/Pinq), and also similar work!!) in github, released about four years ago!!
+>
+>So I decided to change my project name to "__Piqla__"
+>
+>___(This message is temperory)___
 
 This version of Pinq just supports "Pinq to array"
 
