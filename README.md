@@ -6,7 +6,7 @@
 >
 >___(This message is temperory)___
 
-This version of Pinq just supports "Pinq to array"
+This version of Piqla just supports "Piqla to array"
 
 ## Available methods
 
@@ -31,13 +31,13 @@ function offset(int $offset);
 
 ## How to use
 
-Define an array and pass that to new Pinq instance constructor
+Define an array and pass that to new Piqla instance constructor
 
 Callback functions must have one argument at least
 This argument (its name doen't matter) is current item in list in loop
 After that, other else arguments must match with list members name to pass value of that member instead of that argument and these arguments are not required and you have not to define argument for each member beacause you can access by first argument to all of members and other arguments use for easy access to some members.
 
-Now you can use Pinq deformer functions and call them on returned result again and again and ... (like bellow samples)
+Now you can use Piqla deformer functions and call them on returned result again and again and ... (like bellow samples)
 
 ## Sample
 
@@ -66,7 +66,7 @@ $var =
         ]
     ];
 
-$var = new Pinq($var);
+$var = new Piqla($var);
 ```
 
 ### Test functions
@@ -75,7 +75,7 @@ $var = new Pinq($var);
 
 ```php
 echo "<h3>Where:</h3>";
-$var_pinq->where(function ($item, $name, $family, $age) {
+$var_piqla->where(function ($item, $name, $family, $age) {
     return ($age > 35);
 });
 
@@ -85,14 +85,14 @@ $var_pinq->where(function ($item, $name, $family, $age) {
 #### select()
 
 ```php
-$var_pinq->select(function ($item, $name, $family, $age) {
+$var_piqla->select(function ($item, $name, $family, $age) {
     return ["fullname" => $family . ", " . $name, "old" => ($age > 40)];
 });
 
 // Output: [fullname: "gonjishke, jack", old: true}, {fullname: "gandomi, joe", old => false}, {fullname: "landan, jack" old: false}, {fullname: "val john, john", old: true}]
 
 
-$var_pinq->select(function ($item, $name, $family, $age) {
+$var_piqla->select(function ($item, $name, $family, $age) {
     if ($age > 40) return ["fullname" => $family . ", " . $name];
 });
 
@@ -102,7 +102,7 @@ $var_pinq->select(function ($item, $name, $family, $age) {
 #### delete()
 
 ```php
-$var_pinq->delete(function ($item, $name, $family, $age) {
+$var_piqla->delete(function ($item, $name, $family, $age) {
     return $age < 40;
 });
 
@@ -112,7 +112,7 @@ $var_pinq->delete(function ($item, $name, $family, $age) {
 #### update()
 
 ```php
-$var_pinq->update(function ($item, $name, $family, $age) {
+$var_piqla->update(function ($item, $name, $family, $age) {
     if ($age > 40)
         return ["age" => round($age / 2), "old" => true];
     else
@@ -125,7 +125,7 @@ $var_pinq->update(function ($item, $name, $family, $age) {
 #### insert()
 
 ```php
-$var_pinq->insert(function () {
+$var_piqla->insert(function () {
     return ["name" => "nicol", "family" => "cadmiom", "old" => true];
 });
 
@@ -135,7 +135,7 @@ $var_pinq->insert(function () {
 #### orderBy()
 
 ```php
-$var_pinq->orderDescendingBy(function ($item, $name, $family, $age) {
+$var_piqla->orderDescendingBy(function ($item, $name, $family, $age) {
     return [$age > 35, -$age];
 });
 
@@ -145,7 +145,7 @@ $var_pinq->orderDescendingBy(function ($item, $name, $family, $age) {
 #### distinct()
 
 ```php
-$var_pinq->name->distinct();
+$var_piqla->name->distinct();
 
 // Output: [name: "jack"}, {name: "joe"}, {name: "john"}]
 ```
@@ -153,7 +153,7 @@ $var_pinq->name->distinct();
 #### count()
 
 ```php
-$var_pinq->count();
+$var_piqla->count();
 
 // Output: 4
 ```
@@ -161,7 +161,7 @@ $var_pinq->count();
 #### min()
 
 ```php
-$var_pinq->min(function ($item, $age) {
+$var_piqla->min(function ($item, $age) {
     if ($item["name"] == "jack") {
         return $age;
     }
@@ -177,7 +177,7 @@ $var_pinq->min(function ($item, $age) {
 #### max()
 
 ```php
-$var_pinq->max(function ($item, $age) {
+$var_piqla->max(function ($item, $age) {
     if ($item["name"] == "jack") {
         return $age;
     }
@@ -193,7 +193,7 @@ $var_pinq->max(function ($item, $age) {
 #### sum()
 
 ```php
-$var_pinq->sum(function ($item, $age) {
+$var_piqla->sum(function ($item, $age) {
     if ($item["name"] == "jack") {
         return $age;
     }
@@ -209,7 +209,7 @@ $var_pinq->sum(function ($item, $age) {
 #### average()
 
 ```php
-$var_pinq->average(function ($item, $age) {
+$var_piqla->average(function ($item, $age) {
     if ($item["name"] == "jack") {
         return $age;
     }
@@ -225,7 +225,7 @@ $var_pinq->average(function ($item, $age) {
 #### limit()
 
 ```php
-$var_pinq->limit(2, 1);
+$var_piqla->limit(2, 1);
 
 // Output: [name: "joe", family: "gandomi", age: 32}, {name: "jack", family: "landan", age: 23}]
 ```
@@ -233,7 +233,7 @@ $var_pinq->limit(2, 1);
 #### offset()
 
 ```php
-$var_pinq->offset(2);
+$var_piqla->offset(2);
 
 // Output: [name: "jack", family: "landan", age: 23}, {name: "john", family: "val john", age: 63}]
 ```
