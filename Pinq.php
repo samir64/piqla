@@ -218,6 +218,12 @@ class Pinq
     {
         $result = array();
 
+        if (count($params) == 0) {
+            $params = [function ($item) {
+                return $item;
+            }];
+        }
+
         foreach ($params as $callback) {
             $variables = $this->getVariables($callback);
             $result = array_merge($result, $this->_where($callback, $variables));
@@ -234,6 +240,12 @@ class Pinq
     {
         $result = array();
 
+        if (count($params) == 0) {
+            $params = [function ($item) {
+                return $item;
+            }];
+        }
+
         foreach ($params as $callback) {
             $variables = $this->getVariables($callback);
             $result = array_merge($result, $this->_select($callback, $variables));
@@ -249,6 +261,12 @@ class Pinq
     public function delete(callable ...$params)
     {
         $result = array();
+
+        if (count($params) == 0) {
+            $params = [function ($item) {
+                return true;
+            }];
+        }
 
         foreach ($params as $callback) {
             $variables = $this->getVariables($callback);
