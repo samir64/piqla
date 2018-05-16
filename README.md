@@ -4,7 +4,7 @@
 >
 >So I decided to change my project name to "__Piqla__"
 >
->___(This message is temperory)___
+>___(This message is temporary)___
 
 This version of Piqla just supports "Piqla to array"
 
