@@ -211,20 +211,20 @@ class Piqla
     }
 
     /**
-     * @param callable ...$params
+     * @param callable ...$funcs
      * @return Piqla
      */
-    public function where(callable ...$params)
+    public function where(callable ...$funcs)
     {
         $result = array();
 
-        if (count($params) == 0) {
-            $params = [function ($item) {
+        if (count($funcs) == 0) {
+            $funcs = [function ($item) {
                 return $item;
             }];
         }
 
-        foreach ($params as $callback) {
+        foreach ($funcs as $callback) {
             $variables = $this->getVariables($callback);
             $result = array_merge($result, $this->_where($callback, $variables));
         }
@@ -233,20 +233,20 @@ class Piqla
     }
 
     /**
-     * @param callable ...$params
+     * @param callable ...$funcs
      * @return Piqla
      */
-    public function select(callable ...$params)
+    public function select(callable ...$funcs)
     {
         $result = array();
 
-        if (count($params) == 0) {
-            $params = [function ($item) {
+        if (count($funcs) == 0) {
+            $funcs = [function ($item) {
                 return $item;
             }];
         }
 
-        foreach ($params as $callback) {
+        foreach ($funcs as $callback) {
             $variables = $this->getVariables($callback);
             $result = array_merge($result, $this->_select($callback, $variables));
         }
@@ -255,20 +255,20 @@ class Piqla
     }
 
     /**
-     * @param callable ...$params
+     * @param callable ...$funcs
      * @return Piqla
      */
-    public function delete(callable ...$params)
+    public function delete(callable ...$funcs)
     {
         $result = array();
 
-        if (count($params) == 0) {
-            $params = [function ($item) {
+        if (count($funcs) == 0) {
+            $funcs = [function ($item) {
                 return true;
             }];
         }
 
-        foreach ($params as $callback) {
+        foreach ($funcs as $callback) {
             $variables = $this->getVariables($callback);
             $result = array_merge($result, $this->_delete($callback, $variables));
         }
@@ -277,14 +277,14 @@ class Piqla
     }
 
     /**
-     * @param callable ...$params
+     * @param callable ...$funcs
      * @return Piqla
      */
-    public function update(callable ...$params)
+    public function update(callable ...$funcs)
     {
         $result = array();
 
-        foreach ($params as $callback) {
+        foreach ($funcs as $callback) {
             $variables = $this->getVariables($callback);
             $result = array_merge($result, $this->_update($callback, $variables));
         }
@@ -293,14 +293,14 @@ class Piqla
     }
 
     /**
-     * @param callable ...$params
+     * @param callable ...$funcs
      * @return Piqla
      */
-    public function insert(callable ...$params)
+    public function insert(callable ...$funcs)
     {
         $result = array();
 
-        foreach ($params as $callback) {
+        foreach ($funcs as $callback) {
             // $variables = $this->getVariables($callback);
             $result = array_merge($result, $this->_insert($callback));
         }
@@ -310,14 +310,14 @@ class Piqla
 
     /**
      * @param boolean $accending
-     * @param callable ...$params
+     * @param callable ...$funcs
      * @return Piqla
      */
-    public function orderBy($ascending, callable ...$params)
+    public function orderBy($ascending, callable ...$funcs)
     {
         $result = array();
 
-        foreach ($params as $callback) {
+        foreach ($funcs as $callback) {
             $variables = $this->getVariables($callback);
             $result = array_merge($result, $this->_orderBy($callback, $variables, $ascending === true));
         }
@@ -326,21 +326,21 @@ class Piqla
     }
 
     /**
-     * @param callable ...$params
+     * @param callable ...$funcs
      * @return Piqla
      */
-    public function orderAscendingBy(callable ...$params)
+    public function orderAscendingBy(callable ...$funcs)
     {
         return $this->orderBy(true, ...$params);
     }
 
     /**
-     * @param callable ...$params
+     * @param callable ...$funcs
      * @return Piqla
      */
-    public function orderDescendingBy(callable ...$params)
+    public function orderDescendingBy(callable ...$funcs)
     {
-        return $this->orderBy(false, ...$params);
+        return $this->orderBy(false, ...$funcs);
     }
 
     /**
@@ -362,20 +362,20 @@ class Piqla
     }
 
     /**
-     * @param callable ...$params
+     * @param callable ...$funcs
      * @return Piqla
      */
-    public function min(callable ...$params)
+    public function min(callable ...$funcs)
     {
         $result = [];
 
-        if (count($params) == 0) {
-            $params = [function ($item) {
+        if (count($funcs) == 0) {
+            $funcs = [function ($item) {
                 return $item;
             }];
         }
 
-        foreach ($params as $callback) {
+        foreach ($funcs as $callback) {
             $variables = $this->getVariables($callback);
             $result = array_merge($result, $this->_min_max(true, $callback, $variables));
         }
@@ -384,20 +384,20 @@ class Piqla
     }
 
     /**
-     * @param callable ...$params
+     * @param callable ...$funcs
      * @return Piqla
      */
-    public function max(callable ...$params)
+    public function max(callable ...$funcs)
     {
         $result = [];
 
-        if (count($params) == 0) {
-            $params = [function ($item) {
+        if (count($funcs) == 0) {
+            $funcs = [function ($item) {
                 return $item;
             }];
         }
 
-        foreach ($params as $callback) {
+        foreach ($funcs as $callback) {
             $variables = $this->getVariables($callback);
             $result = array_merge($result, $this->_min_max(false, $callback, $variables));
         }
@@ -406,20 +406,20 @@ class Piqla
     }
 
     /**
-     * @param callable ...$params
+     * @param callable ...$funcs
      * @return number
      */
-    public function sum(callable ...$params)
+    public function sum(callable ...$funcs)
     {
         $result = [];
 
-        if (count($params) == 0) {
-            $params = [function ($item) {
+        if (count($funcs) == 0) {
+            $funcs = [function ($item) {
                 return $item;
             }];
         }
 
-        foreach ($params as $callback) {
+        foreach ($funcs as $callback) {
             $variables = $this->getVariables($callback);
             $result = array_merge($result, $this->_sum($callback, $variables));
         }
@@ -428,20 +428,20 @@ class Piqla
     }
 
     /**
-     * @param callable ...$params
+     * @param callable ...$funcs
      * @return number
      */
-    public function average(callable ...$params)
+    public function average(callable ...$funcs)
     {
         $result = [];
 
-        if (count($params) == 0) {
-            $params = [function ($item) {
+        if (count($funcs) == 0) {
+            $funcs = [function ($item) {
                 return $item;
             }];
         }
 
-        foreach ($params as $callback) {
+        foreach ($funcs as $callback) {
             $variables = $this->getVariables($callback);
             $result = array_merge($result, $this->_average($callback, $variables));
         }

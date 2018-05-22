@@ -1,4 +1,4 @@
-# Piqla v1.1.16
+# Piqla v1.1.18
 
 >I found today a project with similar name ([Pinq](https://github.com/TimeToogo/Pinq), and also similar work!!) in github, released about four years ago!!
 >
@@ -11,20 +11,20 @@ This version of Piqla just supports "Piqla to array"
 ## Available methods
 
 ```php
-function where(callable ...$params);
-function select(callable ...$params);
-function delete(callable ...$params);
-function update(callable ...$params);
-function insert(callable ...$params);
-function orderBy(boolean $accending, callable ...$params);
-function orderAscendingBy(callable ...$params);
-function orderDescendingBy(callable ...$params);
+function where(callable ...$funcs);
+function select(callable ...$funcs);
+function delete(callable ...$funcs);
+function update(callable ...$funcs);
+function insert(callable ...$funcs);
+function orderBy(boolean $accending, callable ...$funcs);
+function orderAscendingBy(callable ...$funcs);
+function orderDescendingBy(callable ...$funcs);
 function distinct();
 function count();
-function min();
-function max();
+function min(callable ...$funcs);
+function max(callable ....$funcs);
 function sum(callable ...$params);
-function average(callable ...$params);
+function average(callable ...$funcs);
 function limit(int $count, int $offset);
 function offset(int $offset);
 ```
