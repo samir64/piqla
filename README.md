@@ -23,7 +23,7 @@ function distinct();
 function count();
 function min(callable ...$funcs);
 function max(callable ....$funcs);
-function sum(callable ...$params);
+function sum(callable ...$funcs);
 function average(callable ...$funcs);
 function limit(int $count, int $offset);
 function offset(int $offset);
