@@ -18,7 +18,7 @@ function join(array $list, callable $select, callable ...$wheres): Piqla;
 function group(callable $heads, callable ...$funcs): Piqla[];
 function count(): int;
 function min(callable ...$funcs): Pinq;
-function max(callable ....$funcs): Pinq;
+function max(callable ...$funcs): Pinq;
 function sum(callable ...$funcs): Pinq;
 function average(callable ...$funcs): Pinq;
 function limit(int $count, int $offset): Pinq;
