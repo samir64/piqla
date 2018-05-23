@@ -20,7 +20,7 @@ function count(): int;
 function min(callable $func): mixed;
 function max(callable $func): mixed;
 function sum(callable $func): number;
-function average(callable $func): number;
+function average(callable $func): Pinq;
 function limit(int $count, int $offset): Pinq;
 function offset(int $offset): Pinq;
 
@@ -110,7 +110,7 @@ $persons->select(function ($item) {
 
 ```php
 $persons->delete(function ($item) {
-    return $item["name"] < 40;
+    return $item["age"] < 40;
 });
 
 // Result: [name: "jack", family: "gonjishke", age: 45}, {name: "john", family: "val john", age: 63}]
@@ -120,8 +120,8 @@ $persons->delete(function ($item) {
 
 ```php
 $persons->update(function ($item) {
-    if ($item["name"] > 40)
-        return ["age" => round($item["name"] / 2), "old" => true];
+    if ($item["age"] > 40)
+        return ["age" => round($item["age"] / 2), "old" => true];
     else
         return ["old" => false];
 });
@@ -143,7 +143,7 @@ $persons->insert(function () {
 
 ```php
 $persons->orderDescendingBy(function ($item) {
-    return [$item["name"] > 35, -$item["name"]];
+    return [$item["age"] > 35, -$item["age"]];
 });
 
 // Result: [name: "jack", family: "gonjishke", age: 45}, {name: "john", family: "val john", age: 63}, {name: "jack", family: "landan", age: 23}, {name: "joe", family: "gandomi", age: 32}]
@@ -161,9 +161,9 @@ $persons->name->distinct();
 
 ```php
 $persons->join($addresses->toArray(), function ($left, $right) {
-    return ["full_name" => $left["family"] . ", " . $left["name"], "phone_number" => $right["phone_number"], "address" => $right["street"] . ", " . $right["city"] . ", " . $right["country"]];
-}, function ($left, $right) {
     return ($left["_id"] == $right["person_id"]);
+}, , function ($left, $right) {
+    return ["full_name" => $left["family"] . ", " . $left["name"], "phone_number" => $right["phone_number"], "address" => $right["street"] . ", " . $right["city"] . ", " . $right["country"]];
 });
 
 // Result: [{"full_name":"gonjishke, jack","phone_number":"22118965","address":"there 12, there, far"},{"full_name":"gonjishke, jack","phone_number":"77441122","address":"noh 23, near of hear, near"},{"full_name":"gandomi, joe","phone_number":"12398747","address":"here 1, here, near"},{"full_name":"gandomi, joe","phone_number":"55663322","address":"here 2, here, near"},{"full_name":"landan, jack","phone_number":"74653689","address":"rot 3, right of there, far"}]
@@ -194,7 +194,7 @@ $persons->count();
 ```php
 $persons->min(function ($item) {
     if ($item["name"] == "jack") {
-        return $item["name"];
+        return $item["age"];
     }
 });
 
@@ -214,13 +214,13 @@ $persons->min(function ($item) {
 ```php
 $persons->max(function ($item) {
     if ($item["name"] == "jack") {
-        return $item["name"];
+        return $item["age"];
     }
 });
 
 // Result: name: "jack", family: "gonjishke", age: 45}
 
-$persons->max(function ($item) {
+$persons->max(ffunction ($item) {
     if ($item["name"] != "jack") {
         return strlen($item["name"]);
     }
@@ -234,7 +234,7 @@ $persons->max(function ($item) {
 ```php
 $persons->sum(function ($item) {
     if ($item["name"] == "jack") {
-        return $item["name"];
+        return $item["age"];
     }
 });
 
@@ -254,7 +254,7 @@ $persons->sum(function ($item) {
 ```php
 $persons->average(function ($item) {
     if ($item["name"] == "jack") {
-        return $item["name"];
+        return $item["age"];
     }
 });
 
