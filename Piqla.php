@@ -13,9 +13,9 @@ class Piqla
         return new Piqla($this->data);
     }
 
-    private function getVariables($function)
+    private function getVariables($function, $skip = 1)
     {
-        $args = array_slice((new ReflectionFunction($function))->getParameters(), 1);
+        $args = array_slice((new ReflectionFunction($function))->getParameters(), $skip);
         $variables = array();
         foreach ($args as $arg) {
             $variables[] = $arg->name;
@@ -146,6 +146,41 @@ class Piqla
         $result = $this->data;
 
         uasort($result, $check);
+
+        return $result;
+    }
+
+    private function _join($function, $selectFunction, $variables, $list)
+    {
+        $result = array();
+
+        foreach ($this->data as $leftItem) {
+            foreach ($list as $rightItem) {
+                $res = call_user_func_array($function, array_merge([$leftItem, $rightItem], $this->getValues($leftItem, $variables)));
+                if ($res) {
+                    $result[] = call_user_func_array($selectFunction, [$leftItem, $rightItem]);
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    private function _group($function, $heads, $variables)
+    {
+        $result = array();
+
+        foreach ($this->data as $item) {
+            $res = call_user_func_array($heads, array_merge([$item], $this->getValues($item, $variables)));
+            if (!array_key_exists($res, $result)) {
+                $result[$res] = array();
+            }
+            $result[$res][] = call_user_func_array($function, array_merge([$item], $this->getValues($item, $variables)));
+        }
+
+        foreach ($result as $head => $items) {
+            $result[$head] = new Piqla($items);
+        }
 
         return $result;
     }
@@ -344,6 +379,56 @@ class Piqla
     }
 
     /**
+     * @param array $list
+     * @param callable ...$wheres
+     * @return Piqla
+     */
+    public function join(array $list, callable $select = null, callable ...$wheres)
+    {
+        $result = array();
+
+        if (count($wheres) == 0) {
+            $wheres = [function ($leftItem, $rightItem) {
+                return true;
+            }];
+        }
+
+        if (is_null($select)) {
+            $select = function ($left, $right) {
+                return [$left, $right];
+            };
+        }
+
+        foreach ($wheres as $callback) {
+            $variables = $this->getVariables($callback, 2);
+            $result = array_merge($result, $this->_join($callback, $select, $variables, $list));
+        }
+
+        return new Piqla($result);
+    }
+
+    /**
+     * @param callable $heads
+     * @param callable ...$funcs
+     * @return Piqla[]
+     */
+    public function group(callable $heads, callable ...$funcs)
+    {
+        $result = array();
+
+        if (count($funcs) == 0) {
+            $funcs = [null];
+        }
+
+        foreach ($funcs as $callback) {
+            $variables = is_null($callback) ? [] : $this->getVariables($callback);
+            $result = array_merge($result, $this->_group($callback, $heads, $variables));
+        }
+
+        return $result;
+    }
+
+    /**
      * @return Piqla
      */
     public function distinct()
@@ -474,6 +559,23 @@ class Piqla
         } else {
             return new Piqla();
         }
+    }
+
+    /**
+     * @param string $json
+     * @return void
+     */
+    public function fromJsonString($json)
+    {
+        $this->data = json_decode($json);
+    }
+
+    /**
+     * @return string
+     */
+    public function toJsonString()
+    {
+        return json_encode($this->data);
     }
 
     /**
