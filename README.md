@@ -1,26 +1,26 @@
-# Piqla v1.1.19
+# Piqla v1.2.1
 
 ## Available methods
 
 ```php
-function Pinq(array $input = []): Pinq; // Constructor
+function Pinq(array $input = []); // Constructor
 
-function where(callable ...$funcs): Pinq;
-function select(callable ...$funcs): Pinq;
-function delete(callable ...$funcs): Pinq;
-function update(callable ...$funcs): Pinq;
-function insert(callable ...$funcs): Pinq;
-function orderBy(boolean $accending, callable ...$funcs): Pinq;
-function orderAscendingBy(callable ...$funcs): Pinq;
-function orderDescendingBy(callable ...$funcs): Pinq;
+function where(callable $func): Pinq;
+function select(callable $func): Pinq;
+function delete(callable $func): Pinq;
+function update(callable $func): Pinq;
+function insert(callable $func): Pinq;
+function orderBy(boolean $accending, callable $func): Pinq;
+function orderAscendingBy(callable $func): Pinq;
+function orderDescendingBy(callable $func): Pinq;
 function distinct(): Pinq;
-function join(array $list, callable $select, callable ...$wheres): Piqla;
-function group(callable $heads, callable ...$funcs): Piqla[];
+function join(array $list, callable $where, callable $select): Piqla;
+function group(callable $heads, callable $select): Piqla[];
 function count(): int;
-function min(callable ...$funcs): Pinq;
-function max(callable ...$funcs): Pinq;
-function sum(callable ...$funcs): Pinq;
-function average(callable ...$funcs): Pinq;
+function min(callable $func): mixed;
+function max(callable $func): mixed;
+function sum(callable $func): number;
+function average(callable $func): number;
 function limit(int $count, int $offset): Pinq;
 function offset(int $offset): Pinq;
 
@@ -33,9 +33,8 @@ function toArray(): array;
 
 Define an array and pass that to new Piqla instance constructor
 
-Callback functions must have one argument at least
-This argument (its name doen't matter) is current item in list in loop
-After that, other else arguments must match with list members name to pass value of that member instead of that argument and these arguments are not required and you have not to define argument for each member beacause you can access by first argument to all of members and other arguments use for easy access to some members.
+Callback functions must have one argument (just `join` function has two arguments that first argument is current item and second argument is list's item)
+This argument (its name doen't matter) is current item in list for each loop cycle
 
 Now you can use Piqla deformer functions and call them on returned result again and again and ... (like bellow samples)
 
@@ -83,9 +82,8 @@ $addresses = new Piqla([
 #### where()
 
 ```php
-echo "<h3>Where:</h3>";
-$persons->where(function ($item, $name, $family, $age) {
-    return ($age > 35);
+$persons->where(function ($item) {
+    return ($item["age"] > 35);
 });
 
 // Result: [{name: "jack", family: "gonjishke", age: 45},{name: "john", family: "val john", age: 63}]
@@ -94,15 +92,15 @@ $persons->where(function ($item, $name, $family, $age) {
 #### select()
 
 ```php
-$persons->select(function ($item, $name, $family, $age) {
-    return ["fullname" => $family . ", " . $name, "old" => ($age > 40)];
+$persons->select(function ($item) {
+    return ["fullname" => $item["family"] . ", " . $item["name"], "old" => ($item["age"] > 40)];
 });
 
 // Result: [fullname: "gonjishke, jack", old: true}, {fullname: "gandomi, joe", old => false}, {fullname: "landan, jack" old: false}, {fullname: "val john, john", old: true}]
 
 
-$persons->select(function ($item, $name, $family, $age) {
-    if ($age > 40) return ["fullname" => $family . ", " . $name];
+$persons->select(function ($item) {
+    if ($item["age"] > 40) return ["fullname" => $item["family"] . ", " . $item["name"]];
 });
 
 // Result: [fullname: "gonjishke, jack", {fullname: "val john, john"}]
@@ -111,8 +109,8 @@ $persons->select(function ($item, $name, $family, $age) {
 #### delete()
 
 ```php
-$persons->delete(function ($item, $name, $family, $age) {
-    return $age < 40;
+$persons->delete(function ($item) {
+    return $item["name"] < 40;
 });
 
 // Result: [name: "jack", family: "gonjishke", age: 45}, {name: "john", family: "val john", age: 63}]
@@ -121,9 +119,9 @@ $persons->delete(function ($item, $name, $family, $age) {
 #### update()
 
 ```php
-$persons->update(function ($item, $name, $family, $age) {
-    if ($age > 40)
-        return ["age" => round($age / 2), "old" => true];
+$persons->update(function ($item) {
+    if ($item["name"] > 40)
+        return ["age" => round($item["name"] / 2), "old" => true];
     else
         return ["old" => false];
 });
@@ -144,8 +142,8 @@ $persons->insert(function () {
 #### orderBy()
 
 ```php
-$persons->orderDescendingBy(function ($item, $name, $family, $age) {
-    return [$age > 35, -$age];
+$persons->orderDescendingBy(function ($item) {
+    return [$item["name"] > 35, -$item["name"]];
 });
 
 // Result: [name: "jack", family: "gonjishke", age: 45}, {name: "john", family: "val john", age: 63}, {name: "jack", family: "landan", age: 23}, {name: "joe", family: "gandomi", age: 32}]
@@ -194,65 +192,81 @@ $persons->count();
 #### min()
 
 ```php
-$persons->min(function ($item, $age) {
+$persons->min(function ($item) {
     if ($item["name"] == "jack") {
-        return $age;
+        return $item["name"];
     }
-}, function ($item) {
+});
+
+// Result: name: "jack", family: "landan", age: 23}
+
+$persons->min(function ($item) {
     if ($item["name"] != "jack") {
         return strlen($item["name"]);
     }
 });
 
-// Result: [name: "jack", family: "landan", age: 23}, {name: "joe", family: "gandomi", age: 32}]
+// Result: {name: "joe", family: "gandomi", age: 32}
 ```
 
 #### max()
 
 ```php
-$persons->max(function ($item, $age) {
+$persons->max(function ($item) {
     if ($item["name"] == "jack") {
-        return $age;
+        return $item["name"];
     }
-}, function ($item) {
+});
+
+// Result: name: "jack", family: "gonjishke", age: 45}
+
+$persons->max(function ($item) {
     if ($item["name"] != "jack") {
         return strlen($item["name"]);
     }
 });
 
-// Result: [name: "jack", family: "gonjishke", age: 45}, {name: "john", family: "val john", age: 63}]
+// Result: {name: "john", family: "val john", age: 63}
 ```
 
 #### sum()
 
 ```php
-$persons->sum(function ($item, $age) {
+$persons->sum(function ($item) {
     if ($item["name"] == "jack") {
-        return $age;
+        return $item["name"];
     }
-}, function ($item) {
-    if ($item["name"] != "jack") {
-        return strlen($item["name"]);
-    }
-})->sum();
+});
 
-// Result: [75]
-```
+// Result: [68]
 
-#### average()
-
-```php
-$persons->average(function ($item, $age) {
-    if ($item["name"] == "jack") {
-        return $age;
-    }
-}, function ($item) {
+$persons->sum(function ($item) {
     if ($item["name"] != "jack") {
         return strlen($item["name"]);
     }
 });
 
-// Result: [34, 3.5]
+// Result: [7]
+```
+
+#### average()
+
+```php
+$persons->average(function ($item) {
+    if ($item["name"] == "jack") {
+        return $item["name"];
+    }
+});
+
+// Result: 34
+
+$persons->average(function ($item) {
+    if ($item["name"] != "jack") {
+        return strlen($item["name"]);
+    }
+});
+
+// Result: 3.5
 ```
 
 #### limit()

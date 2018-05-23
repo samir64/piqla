@@ -13,34 +13,12 @@ class Piqla
         return new Piqla($this->data);
     }
 
-    private function getVariables($function, $skip = 1)
-    {
-        $args = array_slice((new ReflectionFunction($function))->getParameters(), $skip);
-        $variables = array();
-        foreach ($args as $arg) {
-            $variables[] = $arg->name;
-        }
-
-        return $variables;
-    }
-
-    private function getValues($array, $variables)
-    {
-        $result = [];
-
-        foreach ($variables as $key) {
-            $result[] = $array[$key];
-        }
-
-        return $result;
-    }
-
-    private function _where($function, $variables)
+    private function _where($function)
     {
         $result = array();
 
         foreach ($this->data as $item) {
-            if (call_user_func_array($function, array_merge([$item], $this->getValues($item, $variables)))) {
+            if (call_user_func($function, $item)) {
                 $result[] = $item;
             }
         }
@@ -48,12 +26,12 @@ class Piqla
         return $result;
     }
 
-    private function _select($function, $variables)
+    private function _select($function)
     {
         $result = array();
 
         foreach ($this->data as $item) {
-            $res = call_user_func_array($function, array_merge([$item], $this->getValues($item, $variables)));
+            $res = call_user_func($function, $item);
             if ($res) {
                 $result[] = $res;
             }
@@ -62,12 +40,12 @@ class Piqla
         return $result;
     }
 
-    private function _delete($function, $variables)
+    private function _delete($function)
     {
         $result = array();
 
         foreach ($this->data as $item) {
-            if (!call_user_func_array($function, array_merge([$item], $this->getValues($item, $variables)))) {
+            if (!call_user_func($function, $item)) {
                 $result[] = $item;
             }
         }
@@ -75,13 +53,13 @@ class Piqla
         return $result;
     }
 
-    private function _update($function, $variables)
+    private function _update($function)
     {
         $result = array();
 
         foreach ($this->data as $item) {
             $row = $item;
-            $res = call_user_func_array($function, array_merge([$item], $this->getValues($item, $variables)));
+            $res = call_user_func($function, $item);
             if ($res) {
                 foreach ($res as $key => $value) {
                     $row[$key] = $value;
@@ -134,11 +112,11 @@ class Piqla
         return $result;
     }
 
-    private function _orderBy($function, $variables, $ascending)
+    private function _orderBy($ascending, $function)
     {
-        $check = function ($item1, $item2) use ($function, $variables, $ascending) {
-            $value1 = call_user_func_array($function, array_merge([$item1], $this->getValues($item1, $variables)));
-            $value2 = call_user_func_array($function, array_merge([$item2], $this->getValues($item2, $variables)));
+        $check = function ($item1, $item2) use ($ascending, $function) {
+            $value1 = call_user_func($function, $item1);
+            $value2 = call_user_func($function, $item2);
 
             return (($value1 == $value2) ? 0 : ((($value1 > $value2) === $ascending) * 2 - 1));
         };
@@ -150,15 +128,15 @@ class Piqla
         return $result;
     }
 
-    private function _join($function, $selectFunction, $variables, $list)
+    private function _join($list, $function, $selectFunction)
     {
         $result = array();
 
         foreach ($this->data as $leftItem) {
             foreach ($list as $rightItem) {
-                $res = call_user_func_array($function, array_merge([$leftItem, $rightItem], $this->getValues($leftItem, $variables)));
+                $res = call_user_func($function, $leftItem, $rightItem);
                 if ($res) {
-                    $result[] = call_user_func_array($selectFunction, [$leftItem, $rightItem]);
+                    $result[] = call_user_func($selectFunction, $leftItem, $rightItem);
                 }
             }
         }
@@ -166,16 +144,16 @@ class Piqla
         return $result;
     }
 
-    private function _group($function, $heads, $variables)
+    private function _group($heads, $function)
     {
         $result = array();
 
         foreach ($this->data as $item) {
-            $res = call_user_func_array($heads, array_merge([$item], $this->getValues($item, $variables)));
+            $res = call_user_func($heads, $item);
             if (!array_key_exists($res, $result)) {
                 $result[$res] = array();
             }
-            $result[$res][] = call_user_func_array($function, array_merge([$item], $this->getValues($item, $variables)));
+            $result[$res][] = call_user_func($function, $item);
         }
 
         foreach ($result as $head => $items) {
@@ -185,46 +163,46 @@ class Piqla
         return $result;
     }
 
-    private function _min_max($min, $function, $variables)
+    private function _min_max($min, $return_item, $function)
     {
         $result = null;
         $check = null;
 
         foreach ($this->data as $item) {
-            $res = call_user_func_array($function, array_merge([$item], $this->getValues($item, $variables)));
+            $res = call_user_func($function, $item);
 
             if (!is_null($res) && (is_null($check) || (($res < $check) == $min))) {
                 $check = $res;
                 $result = $item;
             }
         }
-        return [$result];
+        return $return_item ? $result : $check;
     }
 
-    private function _sum($function, $variables)
+    private function _sum($function)
     {
         $result = 0;
 
         foreach ($this->data as $item) {
-            $res = call_user_func_array($function, array_merge([$item], $this->getValues($item, $variables)));
+            $res = call_user_func($function, $item);
             $result += (is_numeric($res) ? $res : 0);
         }
-        return [$result];
+        return $result;
     }
 
-    private function _average($function, $variables)
+    private function _average($function)
     {
         $result = 0;
         $count = 0;
 
         foreach ($this->data as $item) {
-            $res = call_user_func_array($function, array_merge([$item], $this->getValues($item, $variables)));
+            $res = call_user_func($function, $item);
             if (is_numeric($res)) {
                 $result += $res;
                 $count++;
             }
         }
-        return [$result / $count];
+        return ($result / $count);
     }
 
     public function __construct(array $input = [])
@@ -246,151 +224,138 @@ class Piqla
     }
 
     /**
-     * @param callable ...$funcs
+     * @param string $name
+     * @param mixed $value
+     */
+    public function __set($name, $value)
+    {
+
+    }
+
+    /**
+     * @param callable $func
      * @return Piqla
      */
-    public function where(callable ...$funcs)
+    public function where(callable $func)
     {
         $result = array();
 
-        if (count($funcs) == 0) {
-            $funcs = [function ($item) {
+        if (is_null($func)) {
+            $func = function ($item) {
                 return $item;
-            }];
+            };
         }
 
-        foreach ($funcs as $callback) {
-            $variables = $this->getVariables($callback);
-            $result = array_merge($result, $this->_where($callback, $variables));
-        }
+        $result = $this->_where($func);
 
         return new Piqla($result);
     }
 
     /**
-     * @param callable ...$funcs
+     * @param callable $func
      * @return Piqla
      */
-    public function select(callable ...$funcs)
+    public function select(callable $func)
     {
         $result = array();
 
-        if (count($funcs) == 0) {
-            $funcs = [function ($item) {
+        if (is_null($func)) {
+            $func = function ($item) {
                 return $item;
-            }];
+            };
         }
 
-        foreach ($funcs as $callback) {
-            $variables = $this->getVariables($callback);
-            $result = array_merge($result, $this->_select($callback, $variables));
-        }
+        $result = $this->_select($func);
 
         return new Piqla($result);
     }
 
     /**
-     * @param callable ...$funcs
+     * @param callable $func
      * @return Piqla
      */
-    public function delete(callable ...$funcs)
+    public function delete(callable $func)
     {
         $result = array();
 
-        if (count($funcs) == 0) {
-            $funcs = [function ($item) {
+        if (is_null($func)) {
+            $func = function ($item) {
                 return true;
-            }];
+            };
         }
 
-        foreach ($funcs as $callback) {
-            $variables = $this->getVariables($callback);
-            $result = array_merge($result, $this->_delete($callback, $variables));
-        }
+        $result = $this->_delete($func);
 
         return new Piqla($result);
     }
 
     /**
-     * @param callable ...$funcs
+     * @param callable $func
      * @return Piqla
      */
-    public function update(callable ...$funcs)
+    public function update(callable $func)
     {
         $result = array();
 
-        foreach ($funcs as $callback) {
-            $variables = $this->getVariables($callback);
-            $result = array_merge($result, $this->_update($callback, $variables));
-        }
+        $result = $this->_update($func);
 
         return new Piqla($result);
     }
 
     /**
-     * @param callable ...$funcs
+     * @param callable $func
      * @return Piqla
      */
-    public function insert(callable ...$funcs)
+    public function insert(callable $func)
     {
-        $result = array();
-
-        foreach ($funcs as $callback) {
-            // $variables = $this->getVariables($callback);
-            $result = array_merge($result, $this->_insert($callback));
-        }
+        $result = $this->_insert($func);
 
         return new Piqla($result);
     }
 
     /**
      * @param boolean $accending
-     * @param callable ...$funcs
+     * @param callable $func
      * @return Piqla
      */
-    public function orderBy($ascending, callable ...$funcs)
+    public function orderBy($ascending, callable $func)
     {
-        $result = array();
-
-        foreach ($funcs as $callback) {
-            $variables = $this->getVariables($callback);
-            $result = array_merge($result, $this->_orderBy($callback, $variables, $ascending === true));
-        }
+        $result = $this->_orderBy($ascending === true, $func);
 
         return new Piqla($result);
     }
 
     /**
-     * @param callable ...$funcs
+     * @param callable $func
      * @return Piqla
      */
-    public function orderAscendingBy(callable ...$funcs)
+    public function orderAscendingBy(callable $func)
     {
-        return $this->orderBy(true, ...$params);
+        return $this->orderBy(true, $func);
     }
 
     /**
-     * @param callable ...$funcs
+     * @param callable $func
      * @return Piqla
      */
-    public function orderDescendingBy(callable ...$funcs)
+    public function orderDescendingBy(callable $func)
     {
-        return $this->orderBy(false, ...$funcs);
+        return $this->orderBy(false, $func);
     }
 
     /**
      * @param array $list
-     * @param callable ...$wheres
+     * @param callable $where
      * @return Piqla
      */
-    public function join(array $list, callable $select = null, callable ...$wheres)
+    public function join(array $list, callable $where, callable $select = null)
     {
         $result = array();
 
-        if (count($wheres) == 0) {
-            $wheres = [function ($leftItem, $rightItem) {
+        if (is_null($where)) {
+            $where = function ($leftItem, $rightItem) {
                 return true;
-            }];
+            };
         }
 
         if (is_null($select)) {
@@ -399,31 +364,27 @@ class Piqla
             };
         }
 
-        foreach ($wheres as $callback) {
-            $variables = $this->getVariables($callback, 2);
-            $result = array_merge($result, $this->_join($callback, $select, $variables, $list));
-        }
+        $result = $this->_join($list, $where, $select);
 
         return new Piqla($result);
     }
 
     /**
      * @param callable $heads
-     * @param callable ...$funcs
+     * @param callable $select
      * @return Piqla[]
      */
-    public function group(callable $heads, callable ...$funcs)
+    public function group(callable $heads, callable $select)
     {
         $result = array();
 
-        if (count($funcs) == 0) {
-            $funcs = [null];
+        if (is_null($select)) {
+            $select = function ($item) {
+                return $item;
+            };
         }
 
-        foreach ($funcs as $callback) {
-            $variables = is_null($callback) ? [] : $this->getVariables($callback);
-            $result = array_merge($result, $this->_group($callback, $heads, $variables));
-        }
+        $result = $this->_group($heads, $select);
 
         return $result;
     }
@@ -447,91 +408,79 @@ class Piqla
     }
 
     /**
-     * @param callable ...$funcs
-     * @return Piqla
+     * @param callable $func
+     * @return mixed
      */
-    public function min(callable ...$funcs)
+    public function min(callable $func, $return_item = true)
     {
-        $result = [];
+        $result = null;
 
-        if (count($funcs) == 0) {
-            $funcs = [function ($item) {
+        if (is_null($func)) {
+            $func = function ($item) {
                 return $item;
-            }];
+            };
         }
 
-        foreach ($funcs as $callback) {
-            $variables = $this->getVariables($callback);
-            $result = array_merge($result, $this->_min_max(true, $callback, $variables));
-        }
+        $result = $this->_min_max(true, $return_item, $func);
 
-        return new Piqla($result);
+        return $result;
     }
 
     /**
-     * @param callable ...$funcs
-     * @return Piqla
+     * @param callable $func
+     * @return mixed
      */
-    public function max(callable ...$funcs)
+    public function max(callable $func, $return_item = true)
     {
         $result = [];
 
-        if (count($funcs) == 0) {
-            $funcs = [function ($item) {
+        if (is_null($func)) {
+            $func = function ($item) {
                 return $item;
-            }];
+            };
         }
 
-        foreach ($funcs as $callback) {
-            $variables = $this->getVariables($callback);
-            $result = array_merge($result, $this->_min_max(false, $callback, $variables));
-        }
+        $result = $this->_min_max(false, $return_item, $func);
 
-        return new Piqla($result);
+        return $result;
     }
 
     /**
-     * @param callable ...$funcs
+     * @param callable $func
      * @return number
      */
-    public function sum(callable ...$funcs)
+    public function sum(callable $func)
     {
-        $result = [];
+        $result = 0;
 
-        if (count($funcs) == 0) {
-            $funcs = [function ($item) {
+        if (is_null($func)) {
+            $func = function ($item) {
                 return $item;
-            }];
+            };
         }
 
-        foreach ($funcs as $callback) {
-            $variables = $this->getVariables($callback);
-            $result = array_merge($result, $this->_sum($callback, $variables));
-        }
+        $result = $this->_sum($func);
 
-        return new Piqla($result);
+        return $result;
     }
 
     /**
-     * @param callable ...$funcs
+     * @param callable $func
      * @return number
      */
-    public function average(callable ...$funcs)
+    public function average(callable $func)
     {
-        $result = [];
+        $result = 0;
 
-        if (count($funcs) == 0) {
-            $funcs = [function ($item) {
+        if (is_null($func)) {
+            $func = function ($item) {
                 return $item;
-            }];
+            };
         }
 
-        foreach ($funcs as $callback) {
-            $variables = $this->getVariables($callback);
-            $result = array_merge($result, $this->_average($callback, $variables));
-        }
+        $result = $this->_average($func);
 
-        return new Piqla($result);
+        return $result;
     }
 
     /**
