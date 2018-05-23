@@ -86,7 +86,7 @@ $persons->where(function ($item) {
     return ($item["age"] > 35);
 });
 
-// Result: [{name: "jack", family: "gonjishke", age: 45},{name: "john", family: "val john", age: 63}]
+// Result: [{_id: 1, name: "jack", family: "gonjishke", age: 45},{_id: 4, name: "john", family: "val john", age: 63}]
 ```
 
 #### select()
@@ -113,7 +113,7 @@ $persons->delete(function ($item) {
     return $item["age"] < 40;
 });
 
-// Result: [name: "jack", family: "gonjishke", age: 45}, {name: "john", family: "val john", age: 63}]
+// Result: [_id: 1, name: "jack", family: "gonjishke", age: 45}, {_id: 4, name: "john", family: "val john", age: 63}]
 ```
 
 #### update()
@@ -126,7 +126,7 @@ $persons->update(function ($item) {
         return ["old" => false];
 });
 
-// Result: [name: "jack", family: "gonjishke", age: 23, old: true}, {name: "joe", family: "gandomi", age: 32, old: false}, {name: "jack", family: "landan", age: 23, old: false}, {name: "john", family: "val john", age: 32, old: true}]
+// Result: [_id: 1, name: "jack", family: "gonjishke", age: 23, old: true}, {_id: 2, name: "joe", family: "gandomi", age: 32, old: false}, {_id: 3, name: "jack", family: "landan", age: 23, old: false}, {_id: 4, name: "john", family: "val john", age: 32, old: true}]
 ```
 
 #### insert()
@@ -136,7 +136,7 @@ $persons->insert(function () {
     return ["name" => "nicol", "family" => "cadmiom", "old" => true];
 });
 
-// Result: [name: "jack", family: "gonjishke", age: 45, old: NULL}, {name: "joe", family: "gandomi", age: 32, old: NULL}, {name: "jack", family: "landan", age: 23, old: NULL}, {name: "john", family: "val john", age: 63, old: NULL}, {name: "nicol", family: "cadmiom", old: true, age: NULL}]
+// Result: [_id: 1, name: "jack", family: "gonjishke", age: 45, old: NULL}, {_id: 2, name: "joe", family: "gandomi", age: 32, old: NULL}, {_id: 3, name: "jack", family: "landan", age: 23, old: NULL}, {_id: 4, name: "john", family: "val john", age: 63, old: NULL}, {_id: NULL, name: "nicol", family: "cadmiom", old: true, age: NULL}]
 ```
 
 #### orderBy()
@@ -146,7 +146,7 @@ $persons->orderDescendingBy(function ($item) {
     return [$item["age"] > 35, -$item["age"]];
 });
 
-// Result: [name: "jack", family: "gonjishke", age: 45}, {name: "john", family: "val john", age: 63}, {name: "jack", family: "landan", age: 23}, {name: "joe", family: "gandomi", age: 32}]
+// Result: [_id: 1, name: "jack", family: "gonjishke", age: 45}, {_id: 4, name: "john", family: "val john", age: 63}, {_id: 3, name: "jack", family: "landan", age: 23}, {_id: 2, name: "joe", family: "gandomi", age: 32}]
 ```
 
 #### distinct()
@@ -198,7 +198,7 @@ $persons->min(function ($item) {
     }
 });
 
-// Result: name: "jack", family: "landan", age: 23}
+// Result: {_id: 3, name: "jack", family: "landan", age: 23}
 
 $persons->min(function ($item) {
     if ($item["name"] != "jack") {
@@ -206,7 +206,7 @@ $persons->min(function ($item) {
     }
 });
 
-// Result: {name: "joe", family: "gandomi", age: 32}
+// Result: {_id: 2, name: "joe", family: "gandomi", age: 32}
 ```
 
 #### max()
@@ -218,7 +218,7 @@ $persons->max(function ($item) {
     }
 });
 
-// Result: name: "jack", family: "gonjishke", age: 45}
+// Result: {_id: 1, name: "jack", family: "gonjishke", age: 45}
 
 $persons->max(ffunction ($item) {
     if ($item["name"] != "jack") {
@@ -226,7 +226,7 @@ $persons->max(ffunction ($item) {
     }
 });
 
-// Result: {name: "john", family: "val john", age: 63}
+// Result: {_id: 4, name: "john", family: "val john", age: 63}
 ```
 
 #### sum()
@@ -274,7 +274,7 @@ $persons->average(function ($item) {
 ```php
 $persons->limit(2, 1);
 
-// Result: [name: "joe", family: "gandomi", age: 32}, {name: "jack", family: "landan", age: 23}]
+// Result: [_id: 2, name: "joe", family: "gandomi", age: 32}, {_id: 3, name: "jack", family: "landan", age: 23}]
 ```
 
 #### offset()
@@ -282,5 +282,5 @@ $persons->limit(2, 1);
 ```php
 $persons->offset(2);
 
-// Result: [name: "jack", family: "landan", age: 23}, {name: "john", family: "val john", age: 63}]
+// Result: [_id: 3, name: "jack", family: "landan", age: 23}, {_id: 4, name: "john", family: "val john", age: 63}]
 ```
