@@ -238,7 +238,7 @@ $persons->sum(function ($item) {
     }
 });
 
-// Result: [68]
+// Result: 68
 
 $persons->sum(function ($item) {
     if ($item["name"] != "jack") {
@@ -246,7 +246,7 @@ $persons->sum(function ($item) {
     }
 });
 
-// Result: [7]
+// Result: 7
 ```
 
 #### average()
