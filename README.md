@@ -33,7 +33,7 @@ function toArray(): array;
 
 Define an array and pass that to new Piqla instance constructor
 
-Callback functions must have one argument (just `join` function has two arguments that first argument is current item and second argument is list's item)
+Callback functions must have one argument (just `join` function has two arguments, first argument is current item and second argument is joined list's item)
 This argument (its name doen't matter) is current item in list for each loop cycle
 
 Now you can use Piqla deformer functions and call them on returned result again and again and ... (like bellow samples)
@@ -76,8 +76,6 @@ $addresses = new Piqla([
     ["_id" => 5, "person_id" => 1, "phone_number" => "77441122", "country" => "near", "city" => "near of hear", "street" => "noh 23", "since" => "2017/10/11"]
 ]);
 ```
-
-### Test functions
 
 #### where()
 
