@@ -33,8 +33,11 @@ function toArray(): array;
 
 Define an array and pass that to new Piqla instance constructor
 
-Callback functions must have one argument (just `join` function has two arguments, first argument is current item and second argument is joined list's item)
+Callback functions must have one argument
+
 This argument (its name doen't matter) is current item in list for each loop cycle
+
+just `join` function has two arguments. the second argument is joined list's item
 
 Now you can use Piqla deformer functions and call them on returned result again and again and ... (like bellow samples)
 
