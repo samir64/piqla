@@ -80,7 +80,7 @@ $addresses = new Piqla([
 ]);
 ```
 
-#### where()
+### where()
 
 ```php
 $persons->where(function ($item) {
@@ -90,7 +90,7 @@ $persons->where(function ($item) {
 // Result: [{_id: 1, name: "jack", family: "gonjishke", age: 45},{_id: 4, name: "john", family: "val john", age: 63}]
 ```
 
-#### select()
+### select()
 
 ```php
 $persons->select(function ($item) {
@@ -107,7 +107,7 @@ $persons->select(function ($item) {
 // Result: [fullname: "gonjishke, jack", {fullname: "val john, john"}]
 ```
 
-#### delete()
+### delete()
 
 ```php
 $persons->delete(function ($item) {
@@ -117,7 +117,7 @@ $persons->delete(function ($item) {
 // Result: [_id: 1, name: "jack", family: "gonjishke", age: 45}, {_id: 4, name: "john", family: "val john", age: 63}]
 ```
 
-#### update()
+### update()
 
 ```php
 $persons->update(function ($item) {
@@ -130,7 +130,7 @@ $persons->update(function ($item) {
 // Result: [_id: 1, name: "jack", family: "gonjishke", age: 23, old: true}, {_id: 2, name: "joe", family: "gandomi", age: 32, old: false}, {_id: 3, name: "jack", family: "landan", age: 23, old: false}, {_id: 4, name: "john", family: "val john", age: 32, old: true}]
 ```
 
-#### insert()
+### insert()
 
 ```php
 $persons->insert(function () {
@@ -140,7 +140,7 @@ $persons->insert(function () {
 // Result: [_id: 1, name: "jack", family: "gonjishke", age: 45, old: NULL}, {_id: 2, name: "joe", family: "gandomi", age: 32, old: NULL}, {_id: 3, name: "jack", family: "landan", age: 23, old: NULL}, {_id: 4, name: "john", family: "val john", age: 63, old: NULL}, {_id: NULL, name: "nicol", family: "cadmiom", old: true, age: NULL}]
 ```
 
-#### orderBy()
+### orderBy()
 
 ```php
 $persons->orderDescendingBy(function ($item) {
@@ -150,7 +150,7 @@ $persons->orderDescendingBy(function ($item) {
 // Result: [_id: 1, name: "jack", family: "gonjishke", age: 45}, {_id: 4, name: "john", family: "val john", age: 63}, {_id: 3, name: "jack", family: "landan", age: 23}, {_id: 2, name: "joe", family: "gandomi", age: 32}]
 ```
 
-#### distinct()
+### distinct()
 
 ```php
 $persons->name->distinct();
@@ -158,7 +158,7 @@ $persons->name->distinct();
 // Result: [name: "jack"}, {name: "joe"}, {name: "john"}]
 ```
 
-#### join()
+### join()
 
 ```php
 $persons->join($addresses->toArray(), function ($left, $right) {
@@ -170,7 +170,7 @@ $persons->join($addresses->toArray(), function ($left, $right) {
 // Result: [{"full_name":"gonjishke, jack","phone_number":"22118965","address":"there 12, there, far"},{"full_name":"gonjishke, jack","phone_number":"77441122","address":"noh 23, near of hear, near"},{"full_name":"gandomi, joe","phone_number":"12398747","address":"here 1, here, near"},{"full_name":"gandomi, joe","phone_number":"55663322","address":"here 2, here, near"},{"full_name":"landan, jack","phone_number":"74653689","address":"rot 3, right of there, far"}]
 ```
 
-#### group()
+### group()
 
 ```php
 $addresses->group(function ($item) {
@@ -182,7 +182,7 @@ $addresses->group(function ($item) {
 // Result: {"near":[{"_id":1,"person_id":2},{"_id":3,"person_id":2},{"_id":5,"person_id":1}],"far":[{"_id":2,"person_id":1},{"_id":4,"person_id":3}]}
 ```
 
-#### count()
+### count()
 
 ```php
 $persons->count();
@@ -190,7 +190,7 @@ $persons->count();
 // Result: 4
 ```
 
-#### min()
+### min()
 
 ```php
 $persons->min(function ($item) {
@@ -210,7 +210,7 @@ $persons->min(function ($item) {
 // Result: {_id: 2, name: "joe", family: "gandomi", age: 32}
 ```
 
-#### max()
+### max()
 
 ```php
 $persons->max(function ($item) {
@@ -230,7 +230,7 @@ $persons->max(ffunction ($item) {
 // Result: {_id: 4, name: "john", family: "val john", age: 63}
 ```
 
-#### sum()
+### sum()
 
 ```php
 $persons->sum(function ($item) {
@@ -250,7 +250,7 @@ $persons->sum(function ($item) {
 // Result: 7
 ```
 
-#### average()
+### average()
 
 ```php
 $persons->average(function ($item) {
@@ -270,7 +270,7 @@ $persons->average(function ($item) {
 // Result: 3.5
 ```
 
-#### limit()
+### limit()
 
 ```php
 $persons->limit(2, 1);
@@ -278,7 +278,7 @@ $persons->limit(2, 1);
 // Result: [_id: 2, name: "joe", family: "gandomi", age: 32}, {_id: 3, name: "jack", family: "landan", age: 23}]
 ```
 
-#### offset()
+### offset()
 
 ```php
 $persons->offset(2);
