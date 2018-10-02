@@ -141,6 +141,12 @@ $persons->insert(function () {
 ```
 
 ### orderBy()
+```php
+$persons->orderBy(["name" => false, "age" => true])
+
+// Result: [{"_id":4,"name":"john","family":"val john","age":63},{"_id":2,"name":"joe","family":"gandomi","age":32},{"_id":3,"name":"jack","family":"landan","age":23},{"_id":1,"name":"jack","family":"gonjishke","age":45}]
+```
+
 
 ```php
 $persons->orderDescendingBy(function ($item) {
