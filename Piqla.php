@@ -314,15 +314,31 @@ class Piqla
     }
 
     /**
-     * @param boolean $accending
-     * @param callable $func
+     * @param Array $sort
      * @return Piqla
      */
-    public function orderBy($ascending, callable $func)
+    public function orderBy($sort)
     {
-        $result = $this->_orderBy($ascending === true, $func);
+        $result = $this->data;
+        $check = function ($item1, $item2) use ($sort) {
+            $result = 0;
+            foreach ($sort as $field=>$order) {
+                if ($result === 0) {
+                    if (($order && ($item1[$field] > $item2[$field])) || (!$order && ($item1[$field] < $item2[$field]))) {
+                        $result = 1;
+                    } elseif (($order && ($item1[$field] < $item2[$field])) || (!$order && ($item1[$field] > $item2[$field]))) {
+                        $result = -1;
+                    }
+                }
+            }
+            return $result;
+        };
+        usort($result, $check);
 
         return new Piqla($result);
+        // $result = $this->_orderBy($ascending === true, $func);
+
+        // return new Piqla($result);
     }
 
     /**
@@ -331,7 +347,9 @@ class Piqla
      */
     public function orderAscendingBy(callable $func)
     {
-        return $this->orderBy(true, $func);
+        $result = $this->_orderBy(true, $func);
+        return new Piqla($result);
+        // return $this->orderBy(true, $func);
     }
 
     /**
@@ -340,7 +358,9 @@ class Piqla
      */
     public function orderDescendingBy(callable $func)
     {
-        return $this->orderBy(false, $func);
+        $result = $this->_orderBy(false, $func);
+        return new Piqla($result);
+        // return $this->orderBy(false, $func);
     }
 
     /**
